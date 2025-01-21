@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>大金冷氣選擇系統</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('index') }}">首頁</a></li>
+            <li><a href="{{ url_for('area_search') }}">坪數查詢</a></li>
+            <li><a href="{{ url_for('price_search') }}">價格查詢</a></li>
+            <li><a href="{{ url_for('calculation') }}">精確計算</a></li>
+            <li><a href="{{ url_for('series_info') }}">系列說明</a></li>
+        </ul>
+    </nav>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html> 

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>大金冷氣系列說明</h1>
+    <div class="series-container">
+        {% for item in series %}
+        <div class="series-card">
+            <h2>{{ item['系列名稱'] }}</h2>
+            <p>{{ item['系列特點'] }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+.series-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.series-card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.series-card h2 {
+    color: #333;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #007bff;
+}
+
+.series-card p {
+    color: #666;
+    line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+    .series-container {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %} 

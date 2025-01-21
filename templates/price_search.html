@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>價格查詢</h1>
+    <div class="search-form">
+        <div class="form-group">
+            <label for="min_price">最低價格：</label>
+            <input type="number" id="min_price" name="min_price" min="0" required>
+        </div>
+        <div class="form-group">
+            <label for="max_price">最高價格：</label>
+            <input type="number" id="max_price" name="max_price" min="0" required>
+        </div>
+        <button onclick="searchByPrice()">查詢</button>
+    </div>
+    <div id="results" class="results-container"></div>
+</div>
+
+<script>
+function searchByPrice() {
+    const minPrice = document.getElementById('min_price').value;
+    const maxPrice = document.getElementById('max_price').value;
+    
+    if (!minPrice || !maxPrice) {
+        alert('請輸入價格範圍');
+        return;
+    }
+
+    fetch('/api/search_by_price', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `min_price=${minPrice}&max_price=${maxPrice}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        const resultsDiv = document.getElementById('results');
+        if (data.length === 0) {
+            resultsDiv.innerHTML = '<p>沒有找到符合價格範圍的型號</p>';
+            return;
+        }
+
+        let html = '<table><thead><tr>';
+        Object.keys(data[0]).forEach(key => {
+            html += `<th>${key}</th>`;
+        });
+        html += '</tr></thead><tbody>';
+
+        data.forEach(item => {
+            html += '<tr>';
+            Object.values(item).forEach(value => {
+                html += `<td>${value}</td>`;
+            });
+            html += '</tr>';
+        });
+        html += '</tbody></table>';
+        resultsDiv.innerHTML = html;
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('查詢時發生錯誤');
+    });
+}
+</script>
+{% endblock %} 

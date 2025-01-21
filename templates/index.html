@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>大金冷氣選擇系統</h1>
+    <div class="feature-cards">
+        <div class="card">
+            <h2>坪數查詢</h2>
+            <p>根據空間大小查詢適合的冷氣型號</p>
+            <a href="{{ url_for('area_search') }}" class="btn">開始查詢</a>
+        </div>
+        <div class="card">
+            <h2>價格查詢</h2>
+            <p>根據預算範圍查詢合適的冷氣型號</p>
+            <a href="{{ url_for('price_search') }}" class="btn">開始查詢</a>
+        </div>
+        <div class="card">
+            <h2>精確計算</h2>
+            <p>考慮多種因素，精確計算所需冷氣能力</p>
+            <a href="{{ url_for('calculation') }}" class="btn">開始計算</a>
+        </div>
+        <div class="card">
+            <h2>系列說明</h2>
+            <p>查看各系列冷氣的特點說明</p>
+            <a href="{{ url_for('series_info') }}" class="btn">查看說明</a>
+        </div>
+    </div>
+</div>
+{% endblock %} 
