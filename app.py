@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, jsonify
 from database import AirConditionerDB
 import pandas as pd
 
+# 冷氣空調選擇系統
 app = Flask(__name__)
 db = AirConditionerDB()
 
@@ -16,8 +17,9 @@ def area_search():
 @app.route('/api/search_by_area', methods=['POST'])
 def search_by_area():
     area = float(request.form['area'])
+    brand = request.form.get('brand', None)
     db.connect()
-    result = db.find_by_area(area)
+    result = db.find_by_area(area, brand)
     db.close()
     return jsonify(result.to_dict('records'))
 
@@ -29,8 +31,9 @@ def price_search():
 def search_by_price():
     min_price = int(request.form['min_price'])
     max_price = int(request.form['max_price'])
+    brand = request.form.get('brand', None)
     db.connect()
-    result = db.find_by_price_range(min_price, max_price)
+    result = db.find_by_price_range(min_price, max_price, brand)
     db.close()
     return jsonify(result.to_dict('records'))
 

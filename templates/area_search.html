@@ -8,6 +8,14 @@
             <label for="area">請輸入空間坪數：</label>
             <input type="number" id="area" name="area" step="0.1" min="0" required>
         </div>
+        <div class="form-group">
+            <label for="brand">品牌：</label>
+            <select id="brand" name="brand">
+                <option value="">所有品牌</option>
+                <option value="大金">大金</option>
+                <option value="日立">日立</option>
+            </select>
+        </div>
         <button onclick="searchByArea()">查詢</button>
     </div>
     <div id="results" class="results-container"></div>
@@ -16,6 +24,8 @@
 <script>
 function searchByArea() {
     const area = document.getElementById('area').value;
+    const brand = document.getElementById('brand').value;
+    
     if (!area) {
         alert('請輸入坪數');
         return;
@@ -26,7 +36,7 @@ function searchByArea() {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: `area=${area}`
+        body: `area=${area}&brand=${brand}`
     })
     .then(response => response.json())
     .then(data => {

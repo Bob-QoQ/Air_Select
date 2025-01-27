@@ -4,7 +4,8 @@ import os
 from typing import List, Dict
 
 class AirConditionerDB:
-    def __init__(self, db_path: str = "daikin.db"):
+    def __init__(self, db_path: str = "aircond.db"):
+        # 冷氣空調資料庫
         self.db_path = db_path
         self.conn = None
         self.cursor = None
@@ -34,42 +35,78 @@ class AirConditionerDB:
         if self.conn:
             self.conn.close()
     
-    def find_by_area(self, area: float) -> pd.DataFrame:
-        """根據坪數查詢適合的冷氣"""
-        query = """
-        SELECT 
-            model_number as 型號,
-            series_name as 系列,
-            type as 類型,
-            cooling_capacity as 冷氣能力,
-            suitable_area_min || '~' || suitable_area_max || '坪' as 適用坪數,
-            price as 價格,
-            energy_efficiency_rating as 能源效率,
-            features as 特點
-        FROM air_conditioners
-        WHERE suitable_area_min <= ? AND suitable_area_max >= ?
-        ORDER BY price ASC
-        """
-        
-        df = pd.read_sql_query(query, self.conn, params=(area, area))
+    def find_by_area(self, area: float, brand: str = None) -> pd.DataFrame:
+        """根據坪數和品牌查詢適合的冷氣"""
+        if brand:
+            query = """
+            SELECT 
+                brand as 品牌,
+                model_number as 型號,
+                series_name as 系列,
+                type as 類型,
+                cooling_capacity as 冷氣能力,
+                suitable_area_min || '~' || suitable_area_max || '坪' as 適用坪數,
+                price as 價格,
+                energy_efficiency_rating as 能源效率,
+                features as 特點
+            FROM air_conditioners
+            WHERE suitable_area_min <= ? AND suitable_area_max >= ?
+            AND brand = ?
+            ORDER BY price ASC
+            """
+            df = pd.read_sql_query(query, self.conn, params=(area, area, brand))
+        else:
+            query = """
+            SELECT 
+                brand as 品牌,
+                model_number as 型號,
+                series_name as 系列,
+                type as 類型,
+                cooling_capacity as 冷氣能力,
+                suitable_area_min || '~' || suitable_area_max || '坪' as 適用坪數,
+                price as 價格,
+                energy_efficiency_rating as 能源效率,
+                features as 特點
+            FROM air_conditioners
+            WHERE suitable_area_min <= ? AND suitable_area_max >= ?
+            ORDER BY brand, price ASC
+            """
+            df = pd.read_sql_query(query, self.conn, params=(area, area))
         return df
     
-    def find_by_price_range(self, min_price: int, max_price: int) -> pd.DataFrame:
-        """根據價格範圍查詢冷氣"""
-        query = """
-        SELECT 
-            model_number as 型號,
-            series_name as 系列,
-            type as 類型,
-            suitable_area_min || '~' || suitable_area_max || '坪' as 適用坪數,
-            price as 價格,
-            energy_efficiency_rating as 能源效率
-        FROM air_conditioners
-        WHERE price BETWEEN ? AND ?
-        ORDER BY price ASC
-        """
-        
-        df = pd.read_sql_query(query, self.conn, params=(min_price, max_price))
+    def find_by_price_range(self, min_price: int, max_price: int, brand: str = None) -> pd.DataFrame:
+        """根據價格範圍和品牌查詢冷氣"""
+        if brand:
+            query = """
+            SELECT 
+                brand as 品牌,
+                model_number as 型號,
+                series_name as 系列,
+                type as 類型,
+                suitable_area_min || '~' || suitable_area_max || '坪' as 適用坪數,
+                price as 價格,
+                energy_efficiency_rating as 能源效率
+            FROM air_conditioners
+            WHERE price BETWEEN ? AND ?
+            AND brand = ?
+            ORDER BY price ASC
+            """
+            df = pd.read_sql_query(query, self.conn, params=(min_price, max_price, brand))
+        else:
+            query = """
+            SELECT 
+                brand as 品牌,
+                model_number as 型號,
+                series_name as 系列,
+                type as 類型,
+                suitable_area_min || '~' || suitable_area_max || '坪' as 適用坪數,
+                price as 價格,
+                energy_efficiency_rating as 能源效率
+            FROM air_conditioners
+            WHERE price BETWEEN ? AND ?
+            ORDER BY brand, price ASC
+            """
+            df = pd.read_sql_query(query, self.conn, params=(min_price, max_price))
         return df
     
     def get_series_info(self) -> pd.DataFrame:

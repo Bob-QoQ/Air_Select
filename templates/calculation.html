@@ -21,6 +21,12 @@
         </div>
         
         <div class="form-group">
+            <label for="pipe_price">銅管單價（元/公尺）：</label>
+            <input type="number" id="pipe_price" name="pipe_price" min="0" value="100">
+            <small class="form-text">預設每公尺100元，可依實際報價調整</small>
+        </div>
+        
+        <div class="form-group">
             <label for="room_type">空間類型：</label>
             <select id="room_type" name="room_type">
                 <option value="一般">一般</option>
@@ -78,6 +84,7 @@ function calculate() {
     const area = document.getElementById('area').value;
     const height = document.getElementById('height').value;
     const pipeLength = document.getElementById('pipe_length').value;
+    const pipePrice = document.getElementById('pipe_price').value || 100;
     const roomType = document.getElementById('room_type').value;
     const direction = document.getElementById('direction').value;
     const windows = document.getElementById('windows').checked;
@@ -92,7 +99,7 @@ function calculate() {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: `area=${area}&height=${height}&room_type=${roomType}&direction=${direction}&windows=${windows}&pipe_length=${pipeLength}`
+        body: `area=${area}&height=${height}&room_type=${roomType}&direction=${direction}&windows=${windows}&pipe_length=${pipeLength}&pipe_price=${pipePrice}`
     })
     .then(response => response.json())
     .then(data => {
@@ -121,13 +128,13 @@ function calculate() {
         html += '</tbody></table>';
         suggestionsDiv.innerHTML = html;
 
-        // 顯示估價
-        const pipePrice = pipeLength * 100;
+        // 顯示估價，使用自訂的銅管單價
+        const pipeTotalPrice = pipeLength * pipePrice;
         const acPrice = data.suggestions[0]['價格'];
-        const totalPrice = pipePrice + acPrice;
+        const totalPrice = parseInt(pipeTotalPrice) + parseInt(acPrice);
 
-        document.getElementById('ac-price').textContent = `${acPrice.toLocaleString()} 元`;
-        document.getElementById('pipe-price').textContent = `${pipePrice.toLocaleString()} 元`;
+        document.getElementById('ac-price').textContent = `${parseInt(acPrice).toLocaleString()} 元`;
+        document.getElementById('pipe-price').textContent = `${parseInt(pipeTotalPrice).toLocaleString()} 元`;
         document.getElementById('total-price').textContent = `${totalPrice.toLocaleString()} 元`;
     })
     .catch(error => {
