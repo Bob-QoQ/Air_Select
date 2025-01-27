@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 from database import AirConditionerDB
 import pandas as pd
+import os
 
 # 冷氣空調選擇系統
 app = Flask(__name__)
@@ -67,4 +68,5 @@ def series_info():
     return render_template('series_info.html', series=result.to_dict('records'))
 
 if __name__ == '__main__':
-    app.run(debug=True) 
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port) 
